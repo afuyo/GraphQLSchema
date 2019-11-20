@@ -1,0 +1,416 @@
+// Define Scope
+
+call apoc.custom.asProcedure('scopeActivity',
+'create (node:Scope:Activity:Design {Name:$nodeName}) return node',
+'write',[['node','NODE']],[['nodeName','STRING']])
+;
+
+call apoc.custom.asProcedure('scopeAgreement',
+'create (node:Scope:Agreement:Design {Name:$nodeName}) return node',
+'write',[['node','NODE']],[['nodeName','STRING']])
+;
+
+call apoc.custom.asProcedure('scopeAssessmentCondition',
+'create (node:Scope:AssessmentCondition:Design {Name:$nodeName}) return node',
+'write',[['node','NODE']],[['nodeName','STRING']])
+;
+
+call apoc.custom.asProcedure('scopeCategory',
+'create (node:Scope:Category:Design {Name:$nodeName}) return node',
+'write',[['node','NODE']],[['nodeName','STRING']])
+;
+
+call apoc.custom.asProcedure('scopeClaim',
+'create (node:Scope:Claim:Design {Name:$nodeName}) return node',
+'write',[['node','NODE']],[['nodeName','STRING']])
+;
+
+call apoc.custom.asProcedure('scopeCommonElements',
+'create (node:Scope:CommonElements:Design {Name:$nodeName}) return node',
+'write',[['node','NODE']],[['nodeName','STRING']])
+;
+
+call apoc.custom.asProcedure('scopeContactPlace',
+'create (node:Scope:ContactPlace:Design {Name:$nodeName}) return node',
+'write',[['node','NODE']],[['nodeName','STRING']])
+;
+
+call apoc.custom.asProcedure('scopeDocumentCommunication',
+'create (node:Scope:DocumentCommunication:Design {Name:$nodeName}) return node',
+'write',[['node','NODE']],[['nodeName','STRING']])
+;
+
+call apoc.custom.asProcedure('scopeEvent',
+'create (node:Scope:Event:Design {Name:$nodeName}) return node',
+'write',[['node','NODE']],[['nodeName','STRING']])
+;
+
+call apoc.custom.asProcedure('scopeFinance',
+'create (node:Scope:Finance:Design {Name:$nodeName}) return node',
+'write',[['node','NODE']],[['nodeName','STRING']])
+;
+
+call apoc.custom.asProcedure('scopeInvestment',
+'create (node:Scope:Investment:Design {Name:$nodeName}) return node',
+'write',[['node','NODE']],[['nodeName','STRING']])
+;
+
+call apoc.custom.asProcedure('scopeMarketing',
+'create (node:Scope:Marketing:Design {Name:$nodeName}) return node',
+'write',[['node','NODE']],[['nodeName','STRING']])
+;
+
+call apoc.custom.asProcedure('scopeParty',
+'create (node:Scope:Party:Design {Name:$nodeName}) return node',
+'write',[['node','NODE']],[['nodeName','STRING']])
+;
+
+call apoc.custom.asProcedure('scopePhysicalObject',
+'create (node:Scope:PhysicalObject:Design {Name:$nodeName}) return node',
+'write',[['node','NODE']],[['nodeName','STRING']])
+;
+
+call apoc.custom.asProcedure('scopeProductSpecification',
+'create (node:Scope:ProductSpecification:Design {Name:$nodeName}) return node',
+'write',[['node','NODE']],[['nodeName','STRING']])
+;
+
+call apoc.custom.asProcedure('scopeRegistration',
+'create (node:Scope:Registration:Design {Name:$nodeName}) return node',
+'write',[['node','NODE']],[['nodeName','STRING']])
+;
+
+call apoc.custom.asProcedure('scopeRoleRelationShip',
+'create (node:Scope:RoleRelationShip:Design {Name:$nodeName}) return node',
+'write',[['node','NODE']],[['nodeName','STRING']])
+;
+
+// Show model
+
+call apoc.custom.asProcedure('showScope',
+'match(scope:Scope) return scope','read',
+[['scope','NODE']]);
+
+call apoc.custom.asProcedure('showDesign',
+'match(scope:Design) return scope','read',
+[['scope','NODE']]);
+
+call apoc.custom.asProcedure('showAcordNodeProperties',
+'match(node:AcordNodeType{Name:$Name})-[:HAS_PROPERTY]->(property:AcordPhysicalProperty) 
+ return node, property',
+'read',[['node','NODE'],['property','NODE']],[['Name','STRING']]);
+
+call apoc.custom.asProcedure('showAcordNodeRelations',
+'match(n:AcordNodeType)-[:HAS_RELATIONSHIP]-(r:AcordPhysicalRelation)-[:HAS_RELATIONSHIP]-(m:AcordNodeType) 
+ where n.Name=$nodeName 
+ return n,r,m',
+'read',[['n','NODE'],['r','NODE'],['m','NODE']],[['nodeName','STRING']])
+;
+
+call apoc.custom.asProcedure('showAcordRelations',
+'match(n:AcordNodeType)-[r:HAS_RELATIONSHIP]->(rel:AcordPhysicalRelation)-[r2:HAS_RELATIONSHIP]->(m:AcordNodeType) 
+ return n,rel,m',
+'read',[['n','NODE'],['rel','NODE'],['m','NODE']]);
+
+// Design
+
+call apoc.custom.asProcedure('designCreateNodeType',
+'create (node:Design:New {Name:$nodeName})
+ return node',
+'write',[['node','NODE']],[['nodeName','STRING']]);
+
+call apoc.custom.asProcedure('designCreateProperty',
+'match (node:Design {Name:$nodeName})
+ merge(node)-[:HAS_PROPERTY]->(property:Design:DesignProperty{Name:$propertyName})
+ return property',
+'write',[['property','NODE']],[['nodeName','STRING'],['propertyName','STRING']]);
+
+call apoc.custom.asProcedure('designRollDownFromParent',
+'match (parentNode:AcordNodeType)-[:IS_SUBTYPE_OF]->(generalNode:AcordPhysicalGeneralization)<-[:IS_SUBTYPE_OF]-(childNode:AcordNodeType)
+where parentNode.Name = $inputParentName
+and generalNode.Name <> $inputParentName
+with parentNode.Name as parentNodeName, childNode.Name as childNodeName, generalNode.Name as generalNodeName
+match (parentScopeNode:Scope {Name:parentNodeName})
+match (childScopeNode:Scope {Name:generalNodeName})
+merge (parentScopeNode)-[:ROLLDOWN]->(childScopeNode) return parentScopeNode, childScopeNode',
+'write',[['parentScopeNode','NODE'],['childScopeNode','NODE']],[['inputParentName','STRING']])
+;
+
+call apoc.custom.asProcedure('designRollUpSubtreeToParent',
+'match (parentNode:AcordNodeType)-[:IS_SUBTYPE_OF]->(generalNode:AcordPhysicalGeneralization)<-[:IS_SUBTYPE_OF]-(childNode:AcordNodeType) 
+where parentNode.Name = $inputParentName 
+and parentNode.Name <> generalNode.Name with childNode as parentNode 
+match childPath = (parentNode1:AcordNodeType)-[:IS_SUBTYPE_OF]->(generalNode1:AcordPhysicalGeneralization)<-[:IS_SUBTYPE_OF]-(childNode2:AcordNodeType)
+with parentNode1.Name as parentNodeName, childNode1.Name as childNodeName, generalNode1.Name as generalNodeName
+match (parentScopeNode:Scope {Name:parentNodeName})
+match (childScopeNode:Scope {Name:generalNodeName})
+merge (childScopeNode)-[:ROLLUP]->(parentScopeNode) return parentScopeNode, childScopeNode',
+'write',[['parentScopeNode','NODE'],['childScopeNode','NODE']],[['inputParentName','STRING']])
+;
+
+call apoc.custom.asProcedure('designRollUpToParent',
+'match (parentNode:AcordNodeType)-[:IS_SUBTYPE_OF]->(generalNode:AcordPhysicalGeneralization)<-[:IS_SUBTYPE_OF]-(childNode:AcordNodeType)
+where parentNode.Name = $inputParentName
+and generalNode.Name <> $inputParentName
+with parentNode.Name as parentNodeName, childNode.Name as childNodeName, generalNode.Name as generalNodeName
+match (parentScopeNode:Scope {Name:parentNodeName})
+match (childScopeNode:Scope {Name:generalNodeName})
+merge (childScopeNode)-[:ROLLUP]->(parentScopeNode) return parentScopeNode, childScopeNode',
+'write',[['parentScopeNode','NODE'],['childScopeNode','NODE']],[['inputParentName','STRING']])
+;
+
+call apoc.custom.asProcedure('designSetDepth',
+'match p=(parent:Scope {Name:$parentName})-[*]-(child:Scope)
+with child.Name as childName, LENGTH(p) AS depth
+match (parentDesignNode:Scope)-[design]-(childDesignNode:Scope) 
+where childDesignNode.Name = childName
+set design.Depth = depth',
+'write',[['design','LINK']],[['parentName','STRING']])
+;
+
+call apoc.custom.asProcedure('designReplaceOneManyRelation',
+'match (designNode1:Scope {Name:$nodeName1})
+ match (designNode2:Scope {Name:$nodeName2})
+ merge (designNode1)-[relation:REPLACE_RELATION {Name:$relationName}]->(designNode2) 
+ return designNode1, designNode2',
+'write',[['designNode1','NODE'],['designNode2','NODE']],[['nodeName1','STRING'],['nodeName2','STRING'],['relationName','STRING']])
+;
+
+call apoc.custom.asProcedure('designCreateOneManyRelation',
+'match (designNode1:Design {Name:$nodeName1})
+ match (designNode2:Design {Name:$nodeName2})
+ merge (designNode1)-[relation:CREATE_RELATION {Name:$relationName}]->(designNode2) 
+ return designNode1, designNode2',
+'write',[['designNode1','NODE'],['designNode2','NODE']],[['nodeName1','STRING'],['nodeName2','STRING'],['relationName','STRING']])
+;
+
+// Implementation of design
+
+call apoc.custom.asProcedure('implementDesignCreateNodeTypes',
+'match (node:Design:New) with node.Name as nodeName
+ create (acordNodeType:AcordPhysicalModel:AcordNodeType {ModelName:"FysModel 1", FBB:"_fbb"+nodeName, Name:nodeName}) 
+ return acordNodeType',
+'write',[['acordNodeType','NODE']]);
+
+call apoc.custom.asProcedure('implementDesignCreateProperties',
+'match(designNode:Design)-[:HAS_PROPERTY]->(property:Design:DesignProperty)
+ with designNode.Name as nodeName, property.Name as propertyName 
+ match (acordNodeType:AcordPhysicalModel:AcordNodeType)
+ where acordNodeType.Name = nodeName
+ merge (acordNodeType)-[:HAS_PROPERTY]->(acordProperty:AcordPhysicalModel:AcordPhysicalProperty {
+ ModelName:"FysModel 1", FBB:"_fbbTxProperty", FBB_O:"_fbb"+nodeName, 
+ Name:propertyName,type_id:"_fbb70a9f_c08111e68803_e7fb8ec78045",umlType:"uml:PrimitiveType",dataType:"String"})
+ return acordNodeType, acordProperty',
+'write',[['acordNodeType','NODE'],['acordProperty','NODE']]);
+
+call apoc.custom.asProcedure('implementDesignCreateOneManyRelations',
+'match (nodeDesign1:Design)-[rel:CREATE_RELATION]->(nodeDesign2:Design)
+ with nodeDesign1.Name as nodeDesignName1, rel.Name as designRelationName, nodeDesign2.Name as nodeDesignName2
+ match(oneNode:AcordNodeType)
+ match(manyNode:AcordNodeType)
+ where oneNode.Name=nodeDesignName1
+ and   manyNode.Name=nodeDesignName2
+ with oneNode as oneNode, manyNode as manyNode, designRelationName as relationName, oneNode.FBB as oneNodeFbb
+ merge(oneNode)-[:HAS_RELATIONSHIP]->(newRelation:AcordPhysicalRelation:AcordPhysicalModel {
+ModelName:"FysModel 1", FBB:"_fbb"+relationName, FBB_O:oneNodeFbb, 
+Name:relationName,association:"_fbb"+relationName+"Association",cardinality:"*",type:"_fbb"+relationName+"Type"})-[:HAS_RELATIONSHIP]->(manyNode)
+ return oneNode, manyNode, newRelation',
+'write',[['oneNode','NODE'],['manyNode','NODE'],['newRelation','NODE']]);
+
+call apoc.custom.asProcedure('implementDesignReplaceOneManyRelationsDelete',
+'match (nodeDesign1:Scope)-[rel:REPLACE_RELATION]->(nodeDesign2:Scope)
+ with nodeDesign1.Name as nodeDesignName1, rel.Name as relationName, nodeDesign2.Name as nodeDesignName2
+ match(node1:AcordNodeType)-[:HAS_RELATIONSHIP]->(relNode:AcordPhysicalRelation)-[:HAS_RELATIONSHIP]->(node2:AcordNodeType)
+ where node1.Name=nodeDesignName1
+ and   node2.Name=nodeDesignName2
+ with relNode as nodesToBeDeleted
+ detach delete nodesToBeDeleted
+ return nodesToBeDeleted',
+'write',[['nodesToBeDeleted','NODE']]);
+
+call apoc.custom.asProcedure('implementDesignReplaceOneManyRelationsCreate',
+'match (nodeDesign1:Scope)-[rel:REPLACE_RELATION]->(nodeDesign2:Scope)
+ with nodeDesign1.Name as nodeDesignName1, rel.Name as designRelationName, nodeDesign2.Name as nodeDesignName2
+ match(oneNode:AcordNodeType)
+ match(manyNode:AcordNodeType)
+ where oneNode.Name=nodeDesignName1
+ and   manyNode.Name=nodeDesignName2
+ with oneNode as oneNode, manyNode as manyNode, designRelationName as relationName, oneNode.FBB as oneNodeFbb
+ merge(oneNode)-[:HAS_RELATIONSHIP]->(newRelation:AcordPhysicalRelation:AcordPhysicalModel {
+ ModelName:"FysModel 1", FBB:"_fbb"+relationName, FBB_O:oneNodeFbb, 
+ Name:relationName,association:"_fbb"+relationName+"Association",cardinality:"*",type:"_fbb"+relationName+"Type"})-[:HAS_RELATIONSHIP]->(manyNode)
+ return oneNode, manyNode, newRelation',
+'write',[['oneNode','NODE'],['manyNode','NODE'],['newRelation','NODE']]);
+
+
+
+
+call apoc.custom.asProcedure('implementDesignRollup',
+'match (childDesignNode:Scope)-[design:ROLLUP]->(parentDesignNode:Scope)
+ where design.Depth > 0
+ with childDesignNode.Name as childDesignNodeName, parentDesignNode.Name as parentDesignNodeName, design.Depth as depth
+ order by depth desc
+ match(childNode:AcordNodeType)-[:IS_SUBTYPE_OF]->(:AcordPhysicalGeneralization)<-[:IS_SUBTYPE_OF]-(parentNode:AcordNodeType)
+ where childNode.Name = childDesignNodeName 
+ and  parentNode.Name = parentDesignNodeName
+ with collect([parentNode, childNode]) as nodes
+ unwind nodes as rollUpNodes
+ call apoc.refactor.mergeNodes(rollUpNodes ,{properties:"override", mergeRels:true}) 
+
+ yield node MATCH (n)-[r:IS_SUBTYPE_OF]->(c) return n,r,c',
+'write',[['n','NODE'],['c','NODE']]);
+
+
+
+
+
+call apoc.custom.asProcedure('implementDesignRolldownCloneFromRelationNodes',
+'match (parentDesignNode:Scope)-[design:ROLLDOWN {Depth:$depth}]->(childDesignNode:Scope)
+ with childDesignNode.Name as childDesignNodeName, parentDesignNode.Name as parentDesignNodeName
+ match (relNode:AcordPhysicalRelation)<-[:HAS_RELATIONSHIP]-(fromNode:AcordNodeType)
+ where fromNode.Name=parentDesignNodeName 
+ and not(relNode.FromNode=relNode.ToNode)
+ with relNode as nodes, childDesignNodeName as childDesignNodeName, relNode.Predicate as relNodeName
+ call apoc.refactor.cloneNodes([nodes],true) Yield input, 
+ output set output.Name=childDesignNodeName+relNodeName, output.FromNode=childDesignNodeName
+ return nodes',
+'write',[['nodes','NODE']],[['depth','INTEGER']]);
+
+call apoc.custom.asProcedure('implementDesignRolldownCloneToRelationNodes',
+'match (parentDesignNode:Scope)-[design:ROLLDOWN {Depth:$depth}]->(childDesignNode:Scope)
+ with childDesignNode.Name as childDesignNodeName, parentDesignNode.Name as parentDesignNodeName
+ match (fromNode:AcordNodeType)-[:HAS_RELATIONSHIP]-(relNode:AcordPhysicalRelation)-[:HAS_RELATIONSHIP]->(toNode:AcordNodeType)
+ where toNode.Name=parentDesignNodeName 
+ and not(relNode.FromNode=relNode.ToNode)
+ with relNode as nodes, fromNode.Name as fromNodeName, childDesignNodeName as childDesignNodeName, relNode.Predicate as relNodeName
+ call apoc.refactor.cloneNodes([nodes],true) Yield input, 
+ output set output.Name=childDesignNodeName+relNodeName, output.ToNode=childDesignNodeName
+ return nodes',
+'write',[['nodes','NODE']],[['depth','INTEGER']]);
+
+call apoc.custom.asProcedure('implementDesignRolldownCloneSelfRelationNodes',
+'match (parentDesignNode:Scope)-[design:ROLLDOWN {Depth:$depth}]->(childDesignNode:Scope)
+ with childDesignNode.Name as childDesignNodeName, parentDesignNode.Name as parentDesignNodeName
+ match (parentNode:AcordNodeType)-[:HAS_RELATIONSHIP]-(relNode:AcordPhysicalRelation)-[:HAS_RELATIONSHIP]->(parentNode:AcordNodeType)
+ where parentNode.Name=parentDesignNodeName 
+ and relNode.FromNode=relNode.ToNode
+ with relNode as nodes, childDesignNodeName as childDesignNodeName, relNode.Predicate as relNodeName
+ call apoc.refactor.cloneNodes([nodes],true) Yield input, 
+ output set output.Name=childDesignNodeName+relNodeName, output.FromNode=childDesignNodeName, output.ToNode=childDesignNodeName
+ return nodes',
+'write',[['nodes','NODE']],[['depth','INTEGER']]);
+
+call apoc.custom.asProcedure('implementDesignRolldownCloneParentNodes',
+'match (parentDesignNode:Scope)-[design:ROLLDOWN {Depth:$depth}]->(childDesignNode:Scope)
+ with childDesignNode.Name as childDesignNodeName, parentDesignNode.Name as parentDesignNodeName
+ match(childNode:AcordNodeType)-[:IS_SUBTYPE_OF]->(:AcordPhysicalGeneralization)<-[:IS_SUBTYPE_OF]-(parentNode:AcordNodeType)
+
+ where childNode.Name=childDesignNodeName 
+ and parentNode.Name=parentDesignNodeName
+ with parentNode as nodes, parentNode.Name as parentName, childNode.Name as childName
+ call apoc.refactor.cloneNodes([nodes],true) Yield input, output set output.Name=parentName+childName
+ return nodes',
+'write',[['nodes','NODE']],[['depth','INTEGER']]);
+
+call apoc.custom.asProcedure('implementDesignRolldownCloneGenralizationNodes',
+'match (parentDesignNode:Scope)-[design:ROLLDOWN {Depth:$depth}]->(childDesignNode:Scope)
+ with childDesignNode.Name as childDesignNodeName, parentDesignNode.Name as parentDesignNodeName
+ match(childNode:AcordNodeType)-[:IS_SUBTYPE_OF]->(genNode:AcordPhysicalGeneralization)<-[:IS_SUBTYPE_OF]-(parentNode:AcordNodeType)
+
+ where childNode.Name=childDesignNodeName 
+ and parentNode.Name=parentDesignNodeName
+ with genNode as nodes, parentNode.Name as parentNodeName, genNode.Name as genNodeName, childNode.Name as childNodeName
+ call apoc.refactor.cloneNodes([nodes],true) Yield input, output set output.Name=genNodeName+parentNodeName
+ return nodes',
+'write',[['nodes','NODE']],[['depth','INTEGER']]);
+
+call apoc.custom.asProcedure('implementDesignRolldownDeleteCloneRelationFromSourceNodes',
+'match (parentDesignNode:Scope)-[design:ROLLDOWN {Depth:$depth}]->(childDesignNode:Scope)
+ with  parentDesignNode.Name as parentDesignNodeName
+ match(relNode:AcordPhysicalRelation)<-[r:HAS_RELATIONSHIP]-(parentNode:AcordNodeType)
+ where parentNode.Name=parentDesignNodeName
+ and relNode.FromNode=parentNode.Name
+ and not(relNode.FromNode=relNode.ToNode)
+ with relNode as relNode
+ detach delete relNode
+ return relNode',
+'write',[['relNode','NODE']],[['depth','INTEGER']]);
+
+call apoc.custom.asProcedure('implementDesignRolldownDeleteCloneRelationToSourceNodes',
+'match (parentDesignNode:Scope)-[design:ROLLDOWN {Depth:$depth}]->(childDesignNode:Scope)
+ with  parentDesignNode.Name as parentDesignNodeName
+ match(relNode:AcordPhysicalRelation)-[r:HAS_RELATIONSHIP]->(parentNode:AcordNodeType)
+ where parentNode.Name=parentDesignNodeName
+ and relNode.ToNode=parentNode.Name
+ and not(relNode.FromNode=relNode.ToNode)
+ with relNode as relNode
+ detach delete relNode
+ return relNode',
+'write',[['relNode','NODE']],[['depth','INTEGER']]);
+
+call apoc.custom.asProcedure('implementDesignRolldownDeleteCloneRelationSelfSourceNodes',
+'match (parentDesignNode:Scope)-[design:ROLLDOWN {Depth:$depth}]->(childDesignNode:Scope)
+ with  parentDesignNode.Name as parentDesignNodeName
+ match(relNode:AcordPhysicalRelation)-[r:HAS_RELATIONSHIP]->(parentNode:AcordNodeType)
+ where parentNode.Name=parentDesignNodeName
+ and relNode.ToNode=parentNode.Name
+ and relNode.FromNode=relNode.ToNode
+ with relNode as relNode
+ detach delete relNode
+ return relNode',
+'write',[['relNode','NODE']],[['depth','INTEGER']]);
+
+call apoc.custom.asProcedure('implementDesignRolldownDeleteCloneSourceNodes',
+'match (parentDesignNode:Scope)-[design:ROLLDOWN {Depth:$depth}]->(childDesignNode:Scope)
+ with childDesignNode.Name as childDesignNodeName, parentDesignNode.Name as parentDesignNodeName
+ match(childNode:AcordNodeType)-[:IS_SUBTYPE_OF]->(genNode:AcordPhysicalGeneralization)<-[:IS_SUBTYPE_OF]-(parentNode:AcordNodeType)
+
+ where childNode.Name=childDesignNodeName 
+ and parentNode.Name=parentDesignNodeName
+ and genNode.Name = childDesignNodeName
+ with genNode as genNode, parentNode as parentNode
+ detach delete genNode, parentNode
+ return parentNode',
+'write',[['parentNode','NODE']],[['depth','INTEGER']]);
+
+call apoc.custom.asProcedure('implementDesignRolldownMergeClonedNodes',
+'match (parentDesignNode:Scope)-[design:ROLLDOWN {Depth:$depth}]->(childDesignNode:Scope)
+ with childDesignNode.Name as childDesignNodeName, parentDesignNode.Name+childDesignNode.Name as cloneDesignNodeName
+ match(childNode:AcordNodeType)-[:IS_SUBTYPE_OF]->(genNode:AcordPhysicalGeneralization)<-[:IS_SUBTYPE_OF]-(parentNode:AcordNodeType)
+ where childNode.Name=childDesignNodeName 
+ and parentNode.Name=cloneDesignNodeName
+ with collect([childNode,parentNode]) as nodes
+ unwind nodes as rollDownNodes
+ call apoc.refactor.mergeNodes(rollDownNodes ,{properties:"override", mergeRels:true}) 
+
+ yield node MATCH (n)-[:IS_SUBTYPE_OF]->(c)
+ return n,c',
+'write',[['n','NODE'],['c','NODE']],[['depth','INTEGER']]);
+
+call apoc.custom.asProcedure('implementDesignRolldownDeleteClonedGeneralizationNodes',
+'match (parentDesignNode:Scope)-[design:ROLLDOWN {Depth:$depth}]->(childDesignNode:Scope)
+ with childDesignNode.Name as childDesignNodeName, parentDesignNode.Name as parentDesignNodeName
+ match(childNode:AcordNodeType)-[:IS_SUBTYPE_OF]->(genNode:AcordPhysicalGeneralization)
+ where childNode.Name=childDesignNodeName 
+ and genNode.Name = childDesignNodeName+parentDesignNodeName
+ with genNode as genNode
+ detach delete genNode
+ return genNode',
+'write',[['genNode','NODE']],[['depth','INTEGER']]);
+
+call apoc.custom.asProcedure('implementDesignRolldownDeleteRelationshipFromNode',
+'match(fromNode:AcordNodeType)-[fromRelationship:HAS_RELATIONSHIP]->(relNode:AcordPhysicalRelation)-[toRelationship:HAS_RELATIONSHIP]-(toNode:AcordNodeType)
+ where not(relNode.FromNode = fromNode.Name)
+ with fromRelationship as fromRelationship
+ detach delete  fromRelationship
+ return fromRelationship',
+'write',[['fromRelationship','RELATIONSHIP']]);
+
+call apoc.custom.asProcedure('implementDesignRolldownDeleteRelationshipToNode',
+'match(fromNode:AcordNodeType)-[fromRelationship:HAS_RELATIONSHIP]->(relNode:AcordPhysicalRelation)-[toRelationship:HAS_RELATIONSHIP]-(toNode:AcordNodeType)
+ where not(relNode.ToNode = toNode.Name)
+ with toRelationship as toRelationship
+ detach delete  toRelationship
+ return toRelationship',
+'write',[['toRelationship','RELATIONSHIP']]);
+

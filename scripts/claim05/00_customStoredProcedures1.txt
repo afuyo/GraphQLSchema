@@ -1,0 +1,123 @@
+  CALL apoc.custom.asProcedure('showAcordPhysicalModel',
+  'match(z:AcordNodeType)-[r3:IS_SUBTYPE_OF]->(x:AcordPhysicalGeneralization)<-[r4:IS_SUBTYPE_OF]-(y:AcordNodeType) 
+match(n:AcordNodeType)-[r:HAS_RELATIONSHIP]->(m:AcordPhysicalRelation)-[r1:HAS_RELATIONSHIP]->(a:AcordNodeType) 
+return z,r3,x,r4,y,n,r,m,a,r1','read',
+  [['z','NODE'],['x','NODE'],['y','NODE'],['n','NODE'],['m','NODE'],['a','NODE']]);
+
+CALL apoc.custom.asProcedure('showAcordPhysicalModelSubL',
+  'match(z:AcordNodeType)-[r3:IS_SUBTYPE_OF]->(x:AcordPhysicalGeneralization)<-[r4:IS_SUBTYPE_OF]-(y:AcordNodeType) where z.Name in $list or y.Name in $list
+match(n:AcordNodeType)-[r:HAS_RELATIONSHIP]->(m:AcordPhysicalRelation)-[r1:HAS_RELATIONSHIP]->(a:AcordNodeType)  where n.Name in $list or a.Name in $list
+return z,r3,x,r4,y,n,r,m,a,r1','read',
+  [['z','NODE'],['x','NODE'],['y','NODE'],['n','NODE'],['m','NODE'],['a','NODE']],[['list','LIST TYPE']]);
+
+CALL apoc.custom.asProcedure('rollUpTo',
+  'MATCH (a2:AcordNodeType)-[:IS_SUBTYPE_OF]->(pX:AcordPhysicalGeneralization) <-[:IS_SUBTYPE_OF]-(a3:AcordNodeType)
+where  
+a3.Name = $name
+and pX.Name <> $name
+with collect(a2.Name) as a2Names 
+unwind a2Names as x match(a3:AcordNodeType)-[:IS_SUBTYPE_OF]->(p1:AcordPhysicalGeneralization)<-[:IS_SUBTYPE_OF]-(a4:AcordNodeType)
+where a3.Name=x 
+and a4.Name=$name
+with collect([a4,a3]) as nodes
+unwind nodes as noder 
+CALL apoc.refactor.mergeNodes(noder,{properties:"override", mergeRels:true}) 
+yield node MATCH (n)-[r:IS_SUBTYPE_OF]->(c) return n,c','write',
+  [['n','NODE'],['c','NODE']],[['name','STRING']]);
+
+
+
+   CALL apoc.custom.asProcedure('rollDownL',
+  'MATCH (a2:AcordNodeType)-[:IS_SUBTYPE_OF]->(pX:AcordPhysicalGeneralization) 
+where  
+a2.Name in $list
+with collect(a2.Name) as a2Names 
+unwind a2Names as x match(a3:AcordNodeType)-[:IS_SUBTYPE_OF]->(p1:AcordPhysicalGeneralization)<-[:IS_SUBTYPE_OF]-(a4:AcordNodeType)
+where a3.Name=x 
+and p1.Name<>x
+with collect([a4,a3]) as nodes
+unwind nodes as noder 
+CALL apoc.refactor.mergeNodes(noder,{properties:"override", mergeRels:true}) 
+yield node MATCH (n)-[r:IS_SUBTYPE_OF]->(c) return n,c ','write',
+  [['n','NODE'],['c','NODE']],[['list','LIST TYPE']]);
+
+
+CALL apoc.custom.asProcedure('rollUp',
+  ' MATCH (a2:AcordNodeType)-[:IS_SUBTYPE_OF]->(pX:AcordPhysicalGeneralization) 
+where  
+a2.Name = $name 
+with collect(a2.Name) as a2Names 
+unwind a2Names as x match(a3:AcordNodeType)-[:IS_SUBTYPE_OF]->(p1:AcordPhysicalGeneralization)<-[:IS_SUBTYPE_OF]-(a4:AcordNodeType)
+where a3.Name=x 
+with collect([a3,a4]) as nodes
+unwind nodes as noder 
+CALL apoc.refactor.mergeNodes(noder,{properties:"override", mergeRels:true}) 
+yield node MATCH (n)-[r:IS_SUBTYPE_OF]->(m) return n,m ','write',
+  [['n','NODE'],['m','NODE']],[['name','STRING']]);
+
+CALL apoc.custom.asProcedure('rollUpL',
+  '  MATCH (a2:AcordNodeType)-[:IS_SUBTYPE_OF]->(pX:AcordPhysicalGeneralization) 
+where  
+a2.Name in $list
+with collect(a2.Name) as a2Names 
+unwind a2Names as x match(a3:AcordNodeType)-[:IS_SUBTYPE_OF]->(p1:AcordPhysicalGeneralization)<-[:IS_SUBTYPE_OF]-(a4:AcordNodeType)
+where a3.Name=x 
+with collect([a3,a4]) as nodes
+unwind nodes as noder 
+CALL apoc.refactor.mergeNodes(noder,{properties:"override", mergeRels:true}) 
+yield node MATCH (n)-[r:IS_SUBTYPE_OF]->(m) return n,m ','write',
+  [['n','NODE'],['m','NODE']],[['list','LIST TYPE']]);
+
+
+CALL apoc.custom.asProcedure('mergeRelationFrom',
+  'match(n:AcordNodeType{Name:$source}),(m:AcordPhysicalRelation{Name:$target}) merge (n)-[:HAS_RELATIONSHIP]->(m) RETURN n ,m ','write',
+  [['n','NODE'],['m','NODE']],[['source','STRING'],['target','STRING']]);
+
+  CALL apoc.custom.asProcedure('mergeRelationTo',
+  'match(n:AcordNodeType{Name:$target}),(m:AcordPhysicalRelation{Name:$source}) merge (n)<-[:HAS_RELATIONSHIP]-(m) RETURN n ,m ','write',
+  [['n','NODE'],['m','NODE']],[['target','STRING'],['source','STRING']]);
+
+
+CALL apoc.custom.asProcedure('renameNode',
+  'match(n:AcordPhysicalRelation{Name:$source}) set n.Name=$target return n ','write',
+  [['n','NODE']],[['source','STRING'],['target','STRING']]);
+  
+
+   CALL apoc.custom.asProcedure('cloneNode',
+  'match(n:AcordNodeType{Name:$source})  call apoc.refactor.cloneNodes([n],true) Yield input, output set output.Name=$target return n ','write',
+  [['n','NODE']],[['source','STRING'],['target','STRING']]);
+
+    CALL apoc.custom.asProcedure('cloneGeneralization',
+  'match(n:AcordPhysicalGeneralization{Name:$source})  call apoc.refactor.cloneNodes([n],true) Yield input, output set output.Name=$target return n ','write',
+  [['n','NODE']],[['source','STRING'],['target','STRING']]);
+
+  CALL apoc.custom.asProcedure('deleteSubTypeRelation',
+  'Match(n:AcordNodeType{Name:$name1})-[r:IS_SUBTYPE_OF]->(m:AcordPhysicalGeneralization{Name:$name2}) detach delete r return n ','write',
+  [['n','NODE']],[['name1','STRING'],['name2','STRING']]);
+
+ CALL apoc.custom.asProcedure('deletePhysicalRelation',
+  ' match(n:AcordPhysicalRelation) where n.Name=$name1 detach delete n','write',
+  [['n','NODE']],[['name1','LIST TYPE']]);
+
+ CALL apoc.custom.asProcedure('deleteNode',
+  ' match(n:AcordNodeType{Name:$name})  detach delete n','write',
+  [['n','NODE']],[['name','STRING']]);
+  
+  CALL apoc.custom.asProcedure('deletePhysicalRelationL',
+  ' match(n:AcordPhysicalRelation) where n.Name in $name1 detach delete n','write',
+  [['n','NODE']],[['name1','LIST TYPE']]);
+
+
+  CALL apoc.custom.asProcedure('showAcordLogicalModel',
+  'match(z:AcordType)-[r3:IS_GENERALIZATION_OF]->(x:AcordLogicalGeneralization)<-[r4:IS_GENERALIZATION_OF]-(y:AcordType) 
+match(n:AcordType)-[r:RELATIONALLY_DEPENDS]->(m:AcordLogicalRelation)-[r1:RELATIONALLY_DEPENDS]->(a:AcordType) 
+return z,r3,x,r4,y,n,r,m,a,r1','read',
+  [['z','NODE'],['x','NODE'],['y','NODE'],['n','NODE'],['m','NODE'],['a','NODE']]);
+
+
+
+   CALL apoc.custom.asProcedure('showAcordPhysicalLineage',
+  'match(lg:AcordLogicalGeneralization)-[r0:IMPLEMENTED_BY]->(pg:AcordPhysicalGeneralization)-[r1:IS_SUBTYPE_OF]-(ant:AcordNodeType) 
+match(n:AcordNodeType)-[r:HAS_RELATIONSHIP]->(m:AcordPhysicalRelation)-[r2:HAS_RELATIONSHIP]->(a:AcordNodeType) 
+return lg,r0,pg,r1,ant,n,r,m,a,r2','read',
+  [['lg','NODE'],['pg','NODE'],['ant','NODE'],['n','NODE'],['m','NODE'],['a','NODE']]);

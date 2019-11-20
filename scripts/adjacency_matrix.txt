@@ -1,0 +1,25 @@
+match(n:AcordNodeType)-[r:HAS_RELATIONSHIP]->(a:AcordPhysicalRelation)-[r2:HAS_RELATIONSHIP]->(m:AcordNodeType)-[r3:HAS_RELATIONSHIP]->(b:AcordPhysicalRelation)-[r4:HAS_RELATIONSHIP]->(o:AcordNodeType) 
+where n.Name='Category Membership' and m.Name='Assigned Identifier' and n.Name=o.Name return n,m,o,a,b;
+
+
+
+
+Fint om du legger inn en manuell løsning på 1:1 
+ClaimOwnsClaimStatus
+Mellom Claim – Claim Status
+Claim Offer – Claim Offer Status
+
+
+
+
+ MATCH (g1:AcordNodeType), (g2:AcordNodeType)
+        OPTIONAL MATCH path = (g1)-[:HAS_RELATIONSHIP]-(r)-[:HAS_RELATIONSHIP]-(g2)
+                WITH g1, g2, CASE WHEN path is null THEN 0 ELSE COUNT(distinct r) END AS overlap
+        RETURN g1.Name as lhs, g2.Name as rhs, overlap
+        ORDER BY g1.Name, g2.Name;
+
+        MATCH (g1:AcordNodeType), (g2:AcordNodeType)
+        OPTIONAL MATCH path = (g1)-[:HAS_RELATIONSHIP]-(r)-[:HAS_RELATIONSHIP]-(g2)
+                WITH g1, g2, CASE WHEN path is null THEN 'NULL' ELSE r.Name END AS overlap
+        RETURN g1.Name as lhs, g2.Name as rhs, overlap
+        ORDER BY g1.Name, g2.Name;

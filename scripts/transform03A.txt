@@ -1,0 +1,54 @@
+
+call custom.rollUpTo('Place');
+
+
+call custom.rollUp('Email Contact');
+call custom.rollUp('Email Contact');
+call custom.rollUpTo('Contact Method');
+
+call custom.rollUpTo('Contact Method');
+call custom.rollUpL(['Uniform Resource Locator','Telephone Number']);
+call custom.rollUp('Telephone Number');
+call custom.rollUp('Postal Address');
+call custom.rollUpTo('Address');
+
+
+call custom.deletePhysicalRelationL(['Uniform Resource LocatorIdentified Messaging Contact','Uniform Resource LocatorIdentified Web Page Contact',
+'Postal AddressIdentifying Postal Mail Contact']);
+
+
+call custom.cloneNode('Party Name','OrgName');
+call custom.cloneGeneralization('Party Name','OrgName');
+call custom.cloneRelationship('Party NamePreferring Contact Method','OrgNamePreferring Contact Method');
+call custom.deleteSubTypeRelation('Party Name','OrgName');
+call custom.deleteSubTypeRelation('Party Name','Organization Name');
+call custom.deleteSubTypeRelation('OrgName','Party Name');
+call custom.deleteSubTypeRelation('OrgName','Person Name');
+call custom.deleteHasRelationshipRelation('Party Name','OrgNamePreferring Contact Method');
+call custom.deleteHasRelationshipRelation('OrgName','Party NamePreferring Contact Method');
+call custom.rollDownL(['OrgName','Party Name'] );
+
+
+call custom.mergeRelationFrom('Party','Information Model ObjectIdentifying Assigned Identifier');
+call custom.renameNode('Information Model ObjectIdentifying Assigned Identifier','Identifying Assigned Identifier');
+call custom.renameNode('Telephone NumberIdentified Telephone Contact','Address Identified Contact');
+
+CREATE (n:AcordPhysicalModel:AcordPhysicalRelation { Name: 'Is Organization', ModelName: 'FysModel 1',
+FBB:'_fbbbd60b_c08111e68803_e7fb8ec78045_Tryg01',association:'_fbb71c3a_c08111e68803_e7fb8ec78045_Tryg01'
+,type:'TrygType01'
+,cardinality:'*'
+,FBB_O:'_fbbbd602_c08111e68803_e7fb8ec78045' }) return n;
+
+CREATE (n:AcordPhysicalModel:AcordPhysicalRelation { Name: 'Is Person', ModelName: 'FysModel 1',
+FBB:'_fbbbd60b_c08111e68803_e7fb8ec78045_Tryg01',association:'_fbb71c3a_c08111e68803_e7fb8ec78045_Tryg02'
+,type:'TrygType02'
+,cardinality:'*'
+,FBB_O:'_fbbbd602_c08111e68803_e7fb8ec78045' }) return n;
+
+call custom.mergeRelationTo('Organization','Is Organization');
+call custom.mergeRelationFrom('Party','Is Organization');
+call custom.mergeRelationTo('Person','Is Person');
+call custom.mergeRelationFrom('Party','Is Person');
+call custom.deleteNode('Company');
+call custom.deleteNode('Information Model Object');
+//call custom.mergeManyToMany;

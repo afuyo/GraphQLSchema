@@ -1,0 +1,317 @@
+type TxPartySameAs  
+{
+
+txPartyMaster: String
+txMaxSequence: String
+txMetaCorrection: String
+txMetaChange: String
+txMetaStartEventTime: String
+txPrimaryKey: String @unique
+txMetaSourceKey: String
+txMetaSource: String
+txPartyChild: String
+txMetaLoadTime: String
+id: ID! @id
+PartyByTxSameAsPartyChild: Party @relation(name:"Party_TxSameAsPartyChild")
+PartyByTxSameAsPartyMaster: Party @relation(name:"Party_TxSameAsPartyMaster")
+}
+type AssignedIdentifier  
+{
+
+identifier: String
+txMetaCorrection: String
+txMetaChange: String
+txMetaStartEventTime: String
+txPrimaryKey: String @unique
+txMetaSourceKey: String
+txMetaSource: String
+txMetaLoadTime: String
+identifiedObject: String
+assignedIdentifierKey: String
+id: ID! @id
+assignorCode: String
+Party: Party @relation(name:"Party_IdentifyingAssignedIdentifier")
+}
+type Party  
+{
+
+partyKey: String
+txMetaCorrection: String
+txMetaChange: String
+partyKind: String
+txMetaStartEventTime: String
+txPrimaryKey: String @unique
+txMetaSourceKey: String
+txMetaSource: String
+txMetaLoadTime: String
+id: ID! @id
+TxPartySameAsByTxSameAsPartyMaster: [TxPartySameAs]  @relation(name:"Party_TxSameAsPartyMaster")
+Person: [Person]  @relation(name:"Party_IsPerson")
+AssignedIdentifier: [AssignedIdentifier]  @relation(name:"Party_IdentifyingAssignedIdentifier")
+Organization: [Organization]  @relation(name:"Party_IsOrganization")
+TxPartySameAsByTxSameAsPartyChild: [TxPartySameAs]  @relation(name:"Party_TxSameAsPartyChild")
+ContactMethod: [ContactMethod]  @relation(name:"Party_PartyPreferredContactMethod")
+}
+type Organization  
+{
+
+partyKey: String
+foundationDateTime: String
+txPrimaryKey: String @unique
+txMetaSource: String
+definingPartyRoleRelationshipPartyRoleRelationshipKey: String
+txMetaCorrection: String
+txMetaChange: String
+memberCount: String
+txMetaStartEventTime: String
+txMetaSourceKey: String
+organizationKind: String
+txMetaLoadTime: String
+accountingPeriodStart: String
+accountingPeriodEnd: String
+id: ID! @id
+OrganizationName: [OrganizationName]  @relation(name:"Organization_OrganizationName")
+Party: Party @relation(name:"Party_IsOrganization")
+}
+type Person  
+{
+
+partyKey: String
+maritalStatusCode: String
+deathIndicator: String
+txPrimaryKey: String @unique
+txMetaSource: String
+genderCode: String
+birthDateTime: String
+primaryLanguageLanguageKey: String
+missingIndicator: String
+txMetaCorrection: String
+txMetaChange: String
+txMetaStartEventTime: String
+ethnicityCode: String
+txMetaSourceKey: String
+txMetaLoadTime: String
+bloodTypeCode: String
+id: ID! @id
+missingDateTime: String
+PersonName: [PersonName]  @relation(name:"Person_PersonName")
+Party: Party @relation(name:"Party_IsPerson")
+}
+type OrganizationName  
+{
+
+description: String
+partyNameKind: String
+txPrimaryKey: String @unique
+txMetaSource: String
+partyNameKey: String
+fullName: String
+effectivePeriodStart: String
+effectivePeriodEnd: String
+utilizedLanguageLanguageKey: String
+ownerPartyKey: String
+txMetaCorrection: String
+txMetaChange: String
+defaultIndicator: String
+txMetaStartEventTime: String
+txMetaSourceKey: String
+txMetaLoadTime: String
+id: ID! @id
+usageCode: String
+ContactMethod: [ContactMethod]  @relation(name:"OrganizationName_PartyNamePreferringContactMethod")
+Organization: Organization @relation(name:"Organization_OrganizationName")
+}
+type PersonName  
+{
+
+prefixTitleCode: String
+givenName: String
+description: String
+partyNameKind: String
+txPrimaryKey: String @unique
+txMetaSource: String
+partyNameKey: String
+effectivePeriodStart: String
+effectivePeriodEnd: String
+fullName: String
+utilizedLanguageLanguageKey: String
+middleName: String
+ownerPartyKey: String
+suffix: String
+txMetaCorrection: String
+txMetaChange: String
+defaultIndicator: String
+txMetaStartEventTime: String
+txMetaSourceKey: String
+txMetaLoadTime: String
+id: ID! @id
+usageCode: String
+surname: String
+ContactMethod: [ContactMethod]  @relation(name:"PersonName_PartyNamePreferringContactMethod")
+Person: Person @relation(name:"Person_PersonName")
+}
+type ClaimOffer  
+{
+
+settlementMethodCode: String
+originatingClaimOfferClaimBaseKey: String
+benefitDefinitionCreationDateTime: String
+txPrimaryKey: String @unique
+txMetaSource: String
+offerType: String
+supportedClaimClaimBaseKey: String
+txMetaCorrection: String
+txMetaChange: String
+txMetaStartEventTime: String
+comprisedClaimOfferClaimBaseKey: String
+validityPeriodStart: String
+validityPeriodEnd: String
+txMetaSourceKey: String
+txMetaLoadTime: String
+id: ID! @id
+claimBaseKey: String
+offerLimitDateTime: String
+ClaimOfferByClaimOfferComprisingClaimOffer: [ClaimOffer]  @relation(name:"ClaimOffer_ClaimOfferComprisingClaimOffer")
+ClaimOfferByClaimOfferRecoveringClaimOffer: [ClaimOffer]  @relation(name:"ClaimOffer_ClaimOfferRecoveringClaimOffer")
+ClaimOfferByClaimOfferRecoveredClaimOffer: [ClaimOffer]  @relation(name:"ClaimOffer_ClaimOfferRecoveredClaimOffer")
+ClaimOfferByClaimOfferAlternativeClaimOffer: [ClaimOffer]  @relation(name:"ClaimOffer_ClaimOfferAlternativeClaimOffer")
+ClaimOfferByClaimOfferComprisingClaimOffer: ClaimOffer @relation(name:"ClaimOffer_ClaimOfferComprisingClaimOffer")
+ClaimOfferByClaimOfferRecoveringClaimOffer: ClaimOffer @relation(name:"ClaimOffer_ClaimOfferRecoveringClaimOffer")
+ClaimOfferByClaimOfferRecoveredClaimOffer: ClaimOffer @relation(name:"ClaimOffer_ClaimOfferRecoveredClaimOffer")
+ClaimOfferByClaimOfferAlternativeClaimOffer: ClaimOffer @relation(name:"ClaimOffer_ClaimOfferAlternativeClaimOffer")
+}
+type StreetAddress  
+{
+
+txPrimaryKey: String @unique
+txMetaSource: String
+preDirectionCode: String
+typeCode: String
+addressKey: String
+postDirectionCode: String
+name: String
+txMetaCorrection: String
+txMetaChange: String
+number: String
+txMetaStartEventTime: String
+txMetaSourceKey: String
+txMetaLoadTime: String
+id: ID! @id
+Address: [Address]  @relation(name:"StreetAddress_StreetAddressDeliveryAddress")
+}
+type Address  
+{
+
+floorNumber: String
+addressKind: String
+areaCode: String
+carrierRoute: String
+postalCountrySubdivisionPlaceKey: String
+fullNumber: String
+buildingName: String
+trunkPrefix: String
+addressKey: String
+telecommunicationAddressKind: String
+postalBarcode: String
+boxNumber: String
+identifier: String
+postalCountryPlaceKey: String
+txMetaCorrection: String
+txMetaStartEventTime: String
+txMetaSourceKey: String
+postalStreetAddressAddressKey: String
+placeAddressKind: String
+id: ID! @id
+localNumber: String
+txPrimaryKey: String @unique
+txMetaSource: String
+networkAddressKind: String
+extension: String
+txMetaChange: String
+postalPostCodePlaceKey: String
+identifiedPlacePlaceKey: String
+unitNumber: String
+unstructuredAddress: String
+txMetaLoadTime: String
+countryCode: String
+ContactMethod: [ContactMethod]  @relation(name:"Address_AddressIdentifiedContact")
+Place: [Place]  @relation(name:"Address_PostalAddressPostalMunicipality")
+PlaceByCountrySubdivisionDeliveryAddress: Place @relation(name:"Place_CountrySubdivisionDeliveryAddress")
+StreetAddress: StreetAddress @relation(name:"StreetAddress_StreetAddressDeliveryAddress")
+PlaceByPostCodeDeliveryAddress: Place @relation(name:"Place_PostCodeDeliveryAddress")
+PlaceByPlaceIdentifyingAddress: Place @relation(name:"Place_PlaceIdentifyingAddress")
+PlaceByMunicipalityDeliveryAddress: Place @relation(name:"Place_MunicipalityDeliveryAddress")
+PlaceByCountryDeliveryAddress: Place @relation(name:"Place_CountryDeliveryAddress")
+}
+type ContactMethod  
+{
+
+priorityLevel: String
+messagingContactKind: String
+redListIndicator: String
+telephoneNumberAddressKey: String
+preferredPartyNamePartyNameKey: String
+lastValidatedDateTime: String
+electronicContactKind: String
+preferringPartyRoleRoleKey: String
+txMetaCorrection: String
+txMetaStartEventTime: String
+purposeCode: String
+availablePeriodStart: String
+availablePeriodEnd: String
+txMetaSourceKey: String
+contactMethodKind: String
+contactMethodKey: String
+id: ID! @id
+usageCode: String
+networkTypeCode: String
+solicitableIndicator: String
+txPrimaryKey: String @unique
+txMetaSource: String
+purpose: String
+deliveryAddressAddressKey: String
+txMetaChange: String
+validationResultCode: String
+contactInstructions: String
+uniformResourceLocatorAddressKey: String
+txMetaLoadTime: String
+preferringPartyPartyKey: String
+OrganizationName: OrganizationName @relation(name:"OrganizationName_PartyNamePreferringContactMethod")
+PersonName: PersonName @relation(name:"PersonName_PartyNamePreferringContactMethod")
+Party: Party @relation(name:"Party_PartyPreferredContactMethod")
+Address: Address @relation(name:"Address_AddressIdentifiedContact")
+}
+type Place  
+{
+
+placeKind: String
+abbreviation: String
+extendedIsoCode: String
+telephonePrefixCode: String
+description: String
+alphaIsoCode: String
+txPrimaryKey: String @unique
+txMetaSource: String
+placeKey: String
+typeCode: String
+subSystemTypeCode: String
+assignedCode: String
+name: String
+txMetaCorrection: String
+txMetaChange: String
+administrativeSubdivisionCode: String
+txMetaStartEventTime: String
+availablePeriodStart: String
+availablePeriodEnd: String
+txMetaSourceKey: String
+txMetaLoadTime: String
+id: ID! @id
+assignedCodeExtension: String
+surfaceAreaMeasurement: String
+AddressByPlaceIdentifyingAddress: [Address]  @relation(name:"Place_PlaceIdentifyingAddress")
+AddressByCountrySubdivisionDeliveryAddress: [Address]  @relation(name:"Place_CountrySubdivisionDeliveryAddress")
+AddressByPostCodeDeliveryAddress: [Address]  @relation(name:"Place_PostCodeDeliveryAddress")
+AddressByMunicipalityDeliveryAddress: [Address]  @relation(name:"Place_MunicipalityDeliveryAddress")
+AddressByCountryDeliveryAddress: [Address]  @relation(name:"Place_CountryDeliveryAddress")
+Address: Address @relation(name:"Address_PostalAddressPostalMunicipality")
+}

@@ -1,0 +1,16 @@
+call custom.cloneNode('Party Role','PartyRoleEvent');
+call custom.cloneGeneralization('Party Role','PartyRoleEvent');
+call custom.cloneRelationship('Assigned IdentifierAssignor','EventAssignor');
+call custom.cloneRelationship('Party RoleAssigned Assigned Identifier','PartyEventAssignedIdentifier');
+call custom.deleteSubTypeRelation('Party Role','Party Role In Event');
+call custom.deleteSubTypeRelation('Party Role','PartyRoleEvent');
+//call custom.deleteSubTypeRelation('Party Role','Party Role In Claim');
+call custom.deleteSubTypeRelation('PartyRoleEvent','Party Role In Claim');
+call custom.deleteSubTypeRelation('PartyRoleEvent','Party Role');
+call custom.deleteHasRelationshipRelation('Party Name','OrgNamePreferring Contact Method');
+call custom.deleteHasRelationshipRelation('Party Role','PartyEventAssignedIdentifier');
+match(n:AcordPhysicalRelation{Name:'EventAssignor'})-[r:HAS_RELATIONSHIP]->(m:AcordNodeType{Name:'Party Role'}) detach delete r;
+call custom.deleteHasRelationshipRelation('PartyRoleEvent','Party RoleAssigned Assigned Identifier');
+match(n:AcordPhysicalRelation{Name:'Assigned IdentifierAssignor'})-[r:HAS_RELATIONSHIP]->(m:AcordNodeType{Name:'PartyRoleEvent'}) detach delete r;
+call custom.deleteHasRelationshipRelation('Party Role','PartyEventAssignedIdentifier');
+call custom.rollDownL(['PartyRoleEvent','Party Role'] );

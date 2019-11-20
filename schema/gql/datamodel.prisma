@@ -1,0 +1,32 @@
+model ContactMethod
+{ id String @default(cuid()) @id
+partie  Party?
+dummy String  
+contactKey  String @unique
+}
+
+model Party
+{
+id String @default(cuid()) @id
+partyKey  String @unique
+dummy String
+contactMethod  [ContactMethod] 
+isOrganization Organization? 
+isPerson Person? 
+
+}
+model Organization
+{
+id  String @default(cuid()) @id
+partyKey  String @unique
+dummy  String
+isParty [Party]
+}
+
+model Person
+{
+id String @default(cuid()) @id
+partyKey  String @unique
+dummy  String
+isParty  [Party]   
+}

@@ -1,0 +1,8 @@
+match(z:AcordNodeType)-[r3:IS_SUBTYPE_OF]->(x:AcordPhysicalGeneralization)<-[r4:IS_SUBTYPE_OF]-(y:AcordNodeType) 
+match(n:AcordNodeType)-[r:HAS_RELATIONSHIP]->(m:AcordPhysicalRelation)-[r1:HAS_RELATIONSHIP]->(a:AcordNodeType) 
+return z,r3,x,r4,y,n,r,m,a,r1;
+
+
+// many to many
+match(n:AcordNodeType)-[r:HAS_RELATIONSHIP]->(rel:AcordPhysicalRelation)-[r2:HAS_RELATIONSHIP]->(m:AcordNodeType)-[r3:HAS_RELATIONSHIP]->(rel2:AcordPhysicalRelation) where rel.cardinality='*' and rel.association=rel2.association
+ return rel.association as ass,count(rel.association) as mm order by mm desc;

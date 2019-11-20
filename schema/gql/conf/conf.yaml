@@ -1,0 +1,4 @@
+server_uri: "bolt://localhost:7687"
+server_username:  "neo4j"
+server_password: "wat#rMel0n"
+schema: "PRISMA"

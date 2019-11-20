@@ -1,0 +1,10 @@
+match(n) detach delete n;
+call apoc.xml.import('file:///gitlab/current/edh-model/ACORD/ACORD.xml');
+//call apoc.xml.import('file:///tmp/ACORD.xml');
+
+:params {scope :['Company','Person','Person Name','Party Name','Party','Organization','Organization Name','Information Model Object','Assigned Identifier','Address','Place Address','Network Address','Place','Street Address','Uniform Resource Locator','Telecommunication Address','Telephone Number','Postal Address','Post Code','Municipality','Country Subdivision','Country','Email Address','Contact Method','Telephone Call Contact','Electronic Contact','Messaging Contact','Email Contact','Postal Mail Contact', 'Web Page Contact']}
+
+match(n) where (n.type = "uml:DataType" and n._name = "packagedElement" and n.name in $scope) or
+ (n.type="uml:Class" and n._name = "packagedElement" and n.name in $scope) 
+set n:AcordType return n;
+

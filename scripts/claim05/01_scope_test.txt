@@ -1,0 +1,10 @@
+match(n) detach delete n;
+
+
+call custom.scopeCommonElements('Information Model Object');
+call custom.scopeCommonElements('Assigned Identifier');
+
+call custom.scopeRoleRelationShip('Role');
+call custom.scopeRoleRelationShip('Party Role');
+call custom.scopeRoleRelationShip('Party Role In Claim');
+call custom.scopeRoleRelationShip('Party Role In Event');

@@ -1,0 +1,326 @@
+type Address   @model
+{
+
+floorNumber: String
+addressKind: String
+informationModelObjectKind: String
+areaCode: String
+txGlobalTypeName: String
+carrierRoute: String
+postalCountrySubdivisionPlaceKey: String
+fullNumber: String
+buildingName: String
+trunkPrefix: String
+typeName: String
+addressKey: String
+telecommunicationAddressKind: String
+postalBarcode: String
+postalCountryPlaceKey: String
+identifier: String
+boxNumber: String
+txMetaCorrection: String
+basicDataCompleteCode: String
+txMetaStartEventTime: String
+txMetaSourceKey: String
+postalStreetAddressAddressKey: String
+placeAddressKind: String
+id: String
+creationDateTime: String
+localNumber: String
+txMetaSource: String
+extension: String
+networkAddressKind: String
+txMetaChange: String
+postalPostCodePlaceKey: String
+identifiedPlacePlaceKey: String
+txTypeCode: String
+unstructuredAddress: String
+unitNumber: String
+txMetaLoadTime: String
+countryCode: String
+AddressIdentifiedContact: [ContactMethod]  @connection(name:"Address_AddressIdentifiedContact_fbb70fa3Connection")
+PlaceIdentifyingAddress: Place @connection(name:"Place_PlaceIdentifyingAddress_fbb70b11Connection")
+CountryDeliveryAddress: Place @connection(name:"Place_CountryDeliveryAddress_fbb70b60Connection")
+PostCodeDeliveryAddress: Place @connection(name:"Place_PostCodeDeliveryAddress_fbb70ba7Connection")
+CountrySubdivisionDeliveryAddress: Place @connection(name:"Place_CountrySubdivisionDeliveryAddress_fbb70b7dConnection")
+StreetAddressDeliveryAddress: StreetAddress @connection(name:"StreetAddress_StreetAddressDeliveryAddress_fbb70fe6Connection")
+}
+type OrganizationName   @model
+{
+
+informationModelObjectKind: String
+description: String
+partyNameKind: String
+txGlobalTypeName: String
+txMetaSource: String
+partyNameKey: String
+effectivePeriodStart : String
+effectivePeriodEnd : String
+fullName: String
+typeName: String
+utilizedLanguageLanguageKey: String
+ownerPartyKey: String
+txMetaCorrection: String
+txMetaChange: String
+defaultIndicator: String
+basicDataCompleteCode: String
+txTypeCode: String
+txMetaStartEventTime: String
+txMetaSourceKey: String
+txMetaLoadTime: String
+id: String
+usageCode: String
+creationDateTime: String
+PartyNamePreferringContactMethod: [ContactMethod]  @connection(name:"OrganizationName_PartyNamePreferringContactMethod_fbbbd21fConnection")
+OrganizationName: Organization @connection(name:"Organization_OrganizationName_fbbbd64fConnection")
+}
+type PersonName   @model
+{
+
+prefixTitleCode: String
+informationModelObjectKind: String
+partyNameKind: String
+description: String
+txGlobalTypeName: String
+partyNameKey: String
+fullName: String
+typeName: String
+middleName: String
+txMetaCorrection: String
+basicDataCompleteCode: String
+txMetaStartEventTime: String
+txMetaSourceKey: String
+id: String
+usageCode: String
+creationDateTime: String
+givenName: String
+txMetaSource: String
+effectivePeriodStart : String
+effectivePeriodEnd : String
+utilizedLanguageLanguageKey: String
+ownerPartyKey: String
+suffix: String
+txMetaChange: String
+defaultIndicator: String
+txTypeCode: String
+txMetaLoadTime: String
+surname: String
+PartyNamePreferringContactMethod: [ContactMethod]  @connection(name:"PersonName_PartyNamePreferringContactMethod_fbbbd21fConnection")
+PersonName: Person @connection(name:"Person_PersonName_fbbbd680Connection")
+}
+type Place   @model
+{
+
+abbreviation: String
+informationModelObjectKind: String
+alphaIsoCode: String
+description: String
+txGlobalTypeName: String
+typeName: String
+typeCode: String
+name: String
+txMetaCorrection: String
+basicDataCompleteCode: String
+txMetaStartEventTime: String
+availablePeriodStart : String
+availablePeriodEnd : String
+txMetaSourceKey: String
+id: String
+creationDateTime: String
+placeKind: String
+extendedIsoCode: String
+telephonePrefixCode: String
+txMetaSource: String
+placeKey: String
+subSystemTypeCode: String
+assignedCode: String
+txMetaChange: String
+txTypeCode: String
+txMetaLoadTime: String
+assignedCodeExtension: String
+surfaceAreaMeasurement: String
+PostCodeDeliveryAddress: [Address]  @connection(name:"Place_PostCodeDeliveryAddress_fbb70ba7Connection")
+CountrySubdivisionDeliveryAddress: [Address]  @connection(name:"Place_CountrySubdivisionDeliveryAddress_fbb70b7dConnection")
+PlaceIdentifyingAddress: [Address]  @connection(name:"Place_PlaceIdentifyingAddress_fbb70b11Connection")
+CountryDeliveryAddress: [Address]  @connection(name:"Place_CountryDeliveryAddress_fbb70b60Connection")
+}
+type ContactMethod   @model
+{
+
+priorityLevel: String
+informationModelObjectKind: String
+messagingContactKind: String
+txGlobalTypeName: String
+redListIndicator: String
+telephoneNumberAddressKey: String
+typeName: String
+preferredPartyNamePartyNameKey: String
+lastValidatedDateTime: String
+electronicContactKind: String
+preferringPartyRoleRoleKey: String
+txMetaCorrection: String
+basicDataCompleteCode: String
+txMetaStartEventTime: String
+purposeCode: String
+availablePeriodStart : String
+availablePeriodEnd : String
+txMetaSourceKey: String
+contactMethodKind: String
+contactMethodKey: String
+id: String
+usageCode: String
+networkTypeCode: String
+creationDateTime: String
+solicitableIndicator: String
+txMetaSource: String
+purpose: String
+deliveryAddressAddressKey: String
+txMetaChange: String
+txTypeCode: String
+validationResultCode: String
+contactInstructions: String
+uniformResourceLocatorAddressKey: String
+txMetaLoadTime: String
+preferringPartyPartyKey: String
+PartyNamePreferringContactMethod: PersonName @connection(name:"PersonName_PartyNamePreferringContactMethod_fbbbd21fConnection")
+PartyNamePreferringContactMethod2: OrganizationName @connection(name:"OrganizationName_PartyNamePreferringContactMethod_fbbbd21fConnection")
+AddressIdentifiedContact: Address @connection(name:"Address_AddressIdentifiedContact_fbb70fa3Connection")
+PartyPreferredContactMethod: Party @connection(name:"Party_PartyPreferredContactMethod_fbbbd61dConnection")
+}
+type Party   @model
+{
+
+informationModelObjectKind: String
+partyKey: String
+txGlobalTypeName: String
+txMetaSource: String
+typeName: String
+txMetaCorrection: String
+txMetaChange: String
+partyKind: String
+basicDataCompleteCode: String
+txTypeCode: String
+txMetaStartEventTime: String
+txMetaSourceKey: String
+txMetaLoadTime: String
+id: String
+creationDateTime: String
+IsOrganization: [Organization]  @connection(name:"Party_IsOrganization_fbbbd60bConnection")
+TxSameAsPartyMaster: [TxPartySameAs]  @connection(name:"Party_TxSameAsPartyMaster_fbbTxParConnection")
+PartyPreferredContactMethod: [ContactMethod]  @connection(name:"Party_PartyPreferredContactMethod_fbbbd61dConnection")
+TxSameAsPartyChild: [TxPartySameAs]  @connection(name:"Party_TxSameAsPartyChild_fbbTxParConnection")
+IdentifyingAssignedIdentifier: [AssignedIdentifier]  @connection(name:"Party_IdentifyingAssignedIdentifier_fbbe3922Connection")
+IsPerson: [Person]  @connection(name:"Party_IsPerson_fbbbd60bConnection")
+}
+type Organization   @model
+{
+
+partyKey: String
+foundationDateTime: String
+txMetaSource: String
+definingPartyRoleRelationshipPartyRoleRelationshipKey: String
+txMetaCorrection: String
+txMetaChange: String
+memberCount: String
+txMetaStartEventTime: String
+txMetaSourceKey: String
+organizationKind: String
+txMetaLoadTime: String
+accountingPeriodStart : String
+accountingPeriodEnd : String
+id: String
+OrganizationName: [OrganizationName]  @connection(name:"Organization_OrganizationName_fbbbd64fConnection")
+IsOrganization: Party @connection(name:"Party_IsOrganization_fbbbd60bConnection")
+}
+type Person   @model
+{
+
+partyKey: String
+maritalStatusCode: String
+deathIndicator: String
+txMetaSource: String
+genderCode: String
+birthDateTime: String
+primaryLanguageLanguageKey: String
+missingIndicator: String
+txMetaCorrection: String
+txMetaChange: String
+txMetaStartEventTime: String
+ethnicityCode: String
+txMetaSourceKey: String
+txGlobalGenderCode: String
+txMetaLoadTime: String
+bloodTypeCode: String
+id: String
+missingDateTime: String
+PersonName: [PersonName]  @connection(name:"Person_PersonName_fbbbd680Connection")
+IsPerson: Party @connection(name:"Party_IsPerson_fbbbd60bConnection")
+}
+type AssignedIdentifier   @model
+{
+
+informationModelObjectKind: String
+txGlobalTypeName: String
+txMetaSource: String
+typeName: String
+identifiedObject: String
+assignorCode: String
+identifier: String
+txMetaCorrection: String
+txMetaChange: String
+basicDataCompleteCode: String
+txTypeCode: String
+txMetaStartEventTime: String
+txMetaSourceKey: String
+txMetaLoadTime: String
+assignedIdentifierKey: String
+id: String
+creationDateTime: String
+IdentifyingAssignedIdentifier: Party @connection(name:"Party_IdentifyingAssignedIdentifier_fbbe3922Connection")
+}
+type StreetAddress   @model
+{
+
+informationModelObjectKind: String
+txGlobalTypeName: String
+txMetaSource: String
+preDirectionCode: String
+typeName: String
+typeCode: String
+addressKey: String
+postDirectionCode: String
+name: String
+txMetaCorrection: String
+txMetaChange: String
+number: String
+basicDataCompleteCode: String
+txTypeCode: String
+txMetaStartEventTime: String
+txMetaSourceKey: String
+txMetaLoadTime: String
+id: String
+creationDateTime: String
+StreetAddressDeliveryAddress: [Address]  @connection(name:"StreetAddress_StreetAddressDeliveryAddress_fbb70fe6Connection")
+}
+type TxPartySameAs   @model
+{
+
+txMaxSequence: String
+informationModelObjectKind: String
+txGlobalTypeName: String
+txMetaSource: String
+typeName: String
+txPartyChild: String
+txPartyMaster: String
+txMetaCorrection: String
+txMetaChange: String
+basicDataCompleteCode: String
+txTypeCode: String
+txMetaStartEventTime: String
+txMetaSourceKey: String
+txMetaLoadTime: String
+id: String
+creationDateTime: String
+TxSameAsPartyMaster: Party @connection(name:"Party_TxSameAsPartyMaster_fbbTxParConnection")
+TxSameAsPartyChild: Party @connection(name:"Party_TxSameAsPartyChild_fbbTxParConnection")
+}

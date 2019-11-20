@@ -1,0 +1,783 @@
+type Category  
+{
+
+description: String
+categoryKey: String
+txPrimaryKey: String @unique
+txMetaSource: String
+categorizingCategorySchemeCategorySchemeKey: String
+refreshDateTime: String
+officialDeclarationDateTime: String
+name: String
+maximumCount: String
+officialDeclarationSource: String
+categoryKind: String
+txMetaCorrection: String
+txMetaChange: String
+txMetaStartEventTime: String
+officialDeclaredIndicator: String
+availablePeriodStart: String
+availablePeriodEnd: String
+txMetaSourceKey: String
+categorizedCategorySchemeCategorySchemeKey: String
+populationNature: String
+txMetaLoadTime: String
+claimGroupCostAmount: String
+id: ID! @id
+lineOfBusiness: String
+PlaceByPopulationCategoryCitizenshipCountry: [Place]  @relation(name:"Category_PopulationCategoryCitizenshipCountry")
+CategoryMembership: [CategoryMembership]  @relation(name:"Category_CategoryIncludedCategoryMembership")
+PlaceByCatastropheCategoryRecognizedPlace: [Place]  @relation(name:"Category_CatastropheCategoryRecognizedPlace")
+CategorySchemeByCategorySchemeCategorizingCategory: CategoryScheme @relation(name:"CategoryScheme_CategorySchemeCategorizingCategory")
+CategorySchemeByCategorySchemeCategorizedCategory: CategoryScheme @relation(name:"CategoryScheme_CategorySchemeCategorizedCategory")
+}
+type CategoryMembership  
+{
+
+categorizedInformationModelObject: String
+includingCategoryCategoryKey: String
+txMetaCorrection: String
+txMetaChange: String
+categoryMembershipKey: String
+txMetaStartEventTime: String
+txPrimaryKey: String @unique
+txMetaSourceKey: String
+txMetaSource: String
+effectivePeriodStart: String
+effectivePeriodEnd: String
+txMetaLoadTime: String
+id: ID! @id
+PersonName: PersonName @relation(name:"PersonName_InformationModelObjectCategorizingCategoryMembership")
+OrganizationName: OrganizationName @relation(name:"OrganizationName_InformationModelObjectCategorizingCategoryMembership")
+Category: Category @relation(name:"Category_CategoryIncludedCategoryMembership")
+}
+type AssignedIdentifier  
+{
+
+identifier: String
+txMetaCorrection: String
+txMetaChange: String
+txMetaStartEventTime: String
+txPrimaryKey: String @unique
+txMetaSourceKey: String
+txMetaSource: String
+txMetaLoadTime: String
+assignedIdentifierKey: String
+identifiedObject: String
+id: ID! @id
+assignorCode: String
+PartyRole: [PartyRole]  @relation(name:"AssignedIdentifier_AssignedIdentifierAssignor")
+OrganizationName: OrganizationName @relation(name:"OrganizationName_InformationModelObjectIdentifyingAssignedIdentifier")
+PersonName: PersonName @relation(name:"PersonName_InformationModelObjectIdentifyingAssignedIdentifier")
+}
+type Status  
+{
+
+statusKind: String
+txPrimaryKey: String @unique
+txMetaSource: String
+reason: String
+name: String
+statusKey: String
+txMetaCorrection: String
+txMetaChange: String
+txMetaStartEventTime: String
+txMetaSourceKey: String
+effectiveDateTime: String
+txMetaLoadTime: String
+id: ID! @id
+}
+type CategoryScheme  
+{
+
+description: String
+txPrimaryKey: String @unique
+txMetaSource: String
+name: String
+txMetaCorrection: String
+txMetaChange: String
+txMetaStartEventTime: String
+categorySchemeKey: String
+txMetaSourceKey: String
+txMetaLoadTime: String
+id: ID! @id
+exhaustiveIndicator: String
+overlappingIndicator: String
+CategoryByCategorySchemeCategorizingCategory: [Category]  @relation(name:"CategoryScheme_CategorySchemeCategorizingCategory")
+CategoryByCategorySchemeCategorizedCategory: [Category]  @relation(name:"CategoryScheme_CategorySchemeCategorizedCategory")
+}
+type Party  
+{
+
+partyKey: String
+txMetaCorrection: String
+txMetaChange: String
+partyKind: String
+txMetaStartEventTime: String
+txPrimaryKey: String @unique
+txMetaSourceKey: String
+txMetaSource: String
+txMetaLoadTime: String
+id: ID! @id
+TxPartySameAsByChild: [TxPartySameAs]  @relation(name:"Party_Child")
+ContactMethod: [ContactMethod]  @relation(name:"Party_PartyPreferredContactMethod")
+PartyRole: [PartyRole]  @relation(name:"Party_PartyPlayedPartyRole")
+TxPartySameAsByMaster: [TxPartySameAs]  @relation(name:"Party_Master")
+Person: [Person]  @relation(name:"Party_IsSuperTypeOf")
+}
+type Organization  
+{
+
+partyKey: String
+foundationDateTime: String
+txPrimaryKey: String @unique
+txMetaSource: String
+definingPartyRoleRelationshipPartyRoleRelationshipKey: String
+txMetaCorrection: String
+txMetaChange: String
+memberCount: String
+txMetaStartEventTime: String
+txMetaSourceKey: String
+organizationKind: String
+txMetaLoadTime: String
+accountingPeriodStart: String
+accountingPeriodEnd: String
+id: ID! @id
+OrganizationName: [OrganizationName]  @relation(name:"Organization_OrganizationName")
+}
+type Person  
+{
+
+maritalStatusCode: String
+partyKey: String
+deathIndicator: String
+txPrimaryKey: String @unique
+txMetaSource: String
+genderCode: String
+birthDateTime: String
+missingIndicator: String
+primaryLanguageLanguageKey: String
+txMetaCorrection: String
+txMetaChange: String
+txMetaStartEventTime: String
+ethnicityCode: String
+txMetaSourceKey: String
+txGlobalGenderCode: String
+txMetaLoadTime: String
+bloodTypeCode: String
+id: ID! @id
+missingDateTime: String
+PersonName: [PersonName]  @relation(name:"Person_PersonName")
+Party: Party @relation(name:"Party_IsSuperTypeOf")
+}
+type OrganizationName  
+{
+
+description: String
+partyNameKind: String
+txGlobalTypeName: String
+txPrimaryKey: String @unique
+txMetaSource: String
+partyNameKey: String
+effectivePeriodStart: String
+effectivePeriodEnd: String
+fullName: String
+utilizedLanguageLanguageKey: String
+ownerPartyKey: String
+typeName: String
+creationDateTime: String
+txMetaCorrection: String
+txMetaChange: String
+txTypeCode: String
+defaultIndicator: String
+txMetaStartEventTime: String
+txMetaSourceKey: String
+informationModelObjectKind: String
+txMetaLoadTime: String
+id: ID! @id
+usageCode: String
+basicDataCompleteCode: String
+CategoryMembership: [CategoryMembership]  @relation(name:"OrganizationName_InformationModelObjectCategorizingCategoryMembership")
+ContactMethod: [ContactMethod]  @relation(name:"OrganizationName_PartyNamePreferringContactMethod")
+PartyRole: [PartyRole]  @relation(name:"OrganizationName_PartyNameOwner")
+AssignedIdentifier: [AssignedIdentifier]  @relation(name:"OrganizationName_InformationModelObjectIdentifyingAssignedIdentifier")
+Organization: Organization @relation(name:"Organization_OrganizationName")
+}
+type PersonName  
+{
+
+prefixTitleCode: String
+partyNameKind: String
+description: String
+txGlobalTypeName: String
+partyNameKey: String
+fullName: String
+middleName: String
+creationDateTime: String
+txMetaCorrection: String
+txMetaStartEventTime: String
+txMetaSourceKey: String
+id: ID! @id
+usageCode: String
+givenName: String
+txPrimaryKey: String @unique
+txMetaSource: String
+effectivePeriodStart: String
+effectivePeriodEnd: String
+utilizedLanguageLanguageKey: String
+ownerPartyKey: String
+typeName: String
+suffix: String
+txMetaChange: String
+txTypeCode: String
+defaultIndicator: String
+informationModelObjectKind: String
+txMetaLoadTime: String
+basicDataCompleteCode: String
+surname: String
+CategoryMembership: [CategoryMembership]  @relation(name:"PersonName_InformationModelObjectCategorizingCategoryMembership")
+ContactMethod: [ContactMethod]  @relation(name:"PersonName_PartyNamePreferringContactMethod")
+AssignedIdentifier: [AssignedIdentifier]  @relation(name:"PersonName_InformationModelObjectIdentifyingAssignedIdentifier")
+PartyRole: [PartyRole]  @relation(name:"PersonName_PartyNameOwner")
+Person: Person @relation(name:"Person_PersonName")
+}
+type Communication  
+{
+
+directionTypeCode: String
+originatingContactMethodContactMethodKey: String
+description: String
+txPrimaryKey: String @unique
+txMetaSource: String
+communicationKind: String
+plannedTimePeriodStart: String
+plannedTimePeriodEnd: String
+priorityCode: String
+actualTimePeriodStart: String
+actualTimePeriodEnd: String
+communicationKey: String
+txMetaCorrection: String
+txMetaChange: String
+txMetaStartEventTime: String
+purposeCode: String
+txMetaSourceKey: String
+txMetaLoadTime: String
+id: ID! @id
+PartyRoleByCommunicationSendingPartyRole: [PartyRole]  @relation(name:"Communication_CommunicationSendingPartyRole")
+CommunicationByCommunicationFollowingUpCommunication: [Communication]  @relation(name:"Communication_CommunicationFollowingUpCommunication")
+PartyRoleByCommunicationReceivingPartyRole: [PartyRole]  @relation(name:"Communication_CommunicationReceivingPartyRole")
+CommunicationByCommunicationRespondedToCommunication: [Communication]  @relation(name:"Communication_CommunicationRespondedToCommunication")
+CommunicationByCommunicationFollowedUpOnCommunication: [Communication]  @relation(name:"Communication_CommunicationFollowedUpOnCommunication")
+ContactMethodByCommunicationSendingContactMethod: [ContactMethod]  @relation(name:"Communication_CommunicationSendingContactMethod")
+CommunicationByCommunicationRespondingToCommunication: [Communication]  @relation(name:"Communication_CommunicationRespondingToCommunication")
+CommunicationByCommunicationFollowingUpCommunication: Communication @relation(name:"Communication_CommunicationFollowingUpCommunication")
+ContactMethodByContactMethodOriginatingCommunication: ContactMethod @relation(name:"ContactMethod_ContactMethodOriginatingCommunication")
+CommunicationByCommunicationRespondedToCommunication: Communication @relation(name:"Communication_CommunicationRespondedToCommunication")
+CommunicationByCommunicationFollowedUpOnCommunication: Communication @relation(name:"Communication_CommunicationFollowedUpOnCommunication")
+CommunicationByCommunicationRespondingToCommunication: Communication @relation(name:"Communication_CommunicationRespondingToCommunication")
+ContactMethodByContactMethodDirectingCommunication: [ContactMethod] @relation(name:"ContactMethod_ContactMethodDirectingCommunication")
+ContactMethodByContactMethodReplyingCommunication: [ContactMethod] @relation(name:"ContactMethod_ContactMethodReplyingCommunication")
+}
+type LossEvent  
+{
+
+eventKey: String
+naturalCatastropheIndicator: String
+involvedVehiclesCount: String
+txPrimaryKey: String @unique
+txMetaSource: String
+marketName: String
+pileUpIndicator: String
+eventReceptionDateTime: String
+txMetaCorrection: String
+txMetaChange: String
+txMetaStartEventTime: String
+lossEventKind: String
+txMetaSourceKey: String
+marketRecognitionDateTime: String
+txMetaLoadTime: String
+marketIndicator: String
+marketCostAmount: String
+id: ID! @id
+majorIndicator: String
+LossOccurrence: [LossOccurrence]  @relation(name:"LossEvent_LossEventProducedLossOccurrence")
+ClaimGrouping: [ClaimGrouping] @relation(name:"ClaimGrouping_ClaimGroupingOriginatingLossEvent")
+}
+type Event  
+{
+
+eventKey: String
+description: String
+txPrimaryKey: String @unique
+txMetaSource: String
+effectivePeriodStart: String
+effectivePeriodEnd: String
+eventKind: String
+occurringPlacePlaceKey: String
+name: String
+causingEventEventKey: String
+estimatedPeriodStart: String
+estimatedPeriodEnd: String
+txMetaCorrection: String
+txMetaChange: String
+txMetaStartEventTime: String
+txMetaSourceKey: String
+txMetaLoadTime: String
+id: ID! @id
+Place: [Place]  @relation(name:"Event_EventAffectedPlace")
+PartyRoleInEvent: [PartyRoleInEvent]  @relation(name:"Event_EventIncludedPartyRoleInEvent")
+PlaceByPlaceOccurringEvent: Place @relation(name:"Place_PlaceOccurringEvent")
+}
+type PartyRole  
+{
+
+txMetaCorrection: String
+txMetaChange: String
+txMetaStartEventTime: String
+txPrimaryKey: String @unique
+txMetaSourceKey: String
+txMetaSource: String
+txMetaLoadTime: String
+roleKey: String
+id: ID! @id
+partyRoleKind: String
+namePartyNameKey: String
+playingPartyPartyKey: String
+ContactMethod: [ContactMethod]  @relation(name:"PartyRole_PartyRolePreferredContactMethod")
+CommunicationByCommunicationSendingPartyRole: [Communication] @relation(name:"Communication_CommunicationSendingPartyRole")
+OrganizationName: OrganizationName @relation(name:"OrganizationName_PartyNameOwner")
+CommunicationByCommunicationReceivingPartyRole: [Communication] @relation(name:"Communication_CommunicationReceivingPartyRole")
+AssignedIdentifier: [AssignedIdentifier] @relation(name:"AssignedIdentifier_AssignedIdentifierAssignor")
+Party: Party @relation(name:"Party_PartyPlayedPartyRole")
+PersonName: PersonName @relation(name:"PersonName_PartyNameOwner")
+}
+type PartyRoleInClaim  
+{
+
+responsibilityPercentage: String
+txPrimaryKey: String @unique
+txMetaSource: String
+liabilityPercentage: String
+partyRoleInClaimKind: String
+claimExpertKind: String
+roleKey: String
+involvingClaimBaseClaimBaseKey: String
+insurerName: String
+patientKind: String
+confirmationDateTime: String
+identifier: String
+txMetaCorrection: String
+txMetaChange: String
+agreementNumber: String
+confirmationIndicator: String
+txMetaStartEventTime: String
+txMetaSourceKey: String
+txMetaLoadTime: String
+insuredRelationshipCode: String
+id: ID! @id
+homeboundIndicator: String
+lastDischargeFacilityType: String
+ClaimBase: ClaimBase @relation(name:"ClaimBase_ClaimBaseInvolvedPartyRoleInClaim")
+LossNotification: [LossNotification] @relation(name:"LossNotification_LossNotificationReportingClaimDeclarer")
+}
+type PartyRoleInEvent  
+{
+
+txMetaCorrection: String
+txMetaChange: String
+txMetaStartEventTime: String
+txPrimaryKey: String @unique
+txMetaSourceKey: String
+txMetaSource: String
+txMetaLoadTime: String
+partyRoleInEventKind: String
+roleKey: String
+includingEventEventKey: String
+id: ID! @id
+Event: Event @relation(name:"Event_EventIncludedPartyRoleInEvent")
+}
+type Claim  
+{
+
+involvedClaimBaseClaimBaseKey: String
+initiatingLossOccurrenceLossOccurrenceKey: String
+decisionReasonDescription: String
+claimKind: String
+coveragePercentage: String
+txPrimaryKey: String @unique
+txMetaSource: String
+txMetaCorrection: String
+txMetaChange: String
+claimedFinancialServicesAgreementAgreementBaseKey: String
+txMetaStartEventTime: String
+txMetaSourceKey: String
+txMetaLoadTime: String
+id: ID! @id
+claimBaseKey: String
+ClaimComponent: [ClaimComponent]  @relation(name:"Claim_ClaimIncludedClaimComponent")
+ClaimOffer: [ClaimOffer]  @relation(name:"Claim_ClaimSupportingClaimOffer")
+ClaimByClaimRelatedClaim: [Claim]  @relation(name:"Claim_ClaimRelatedClaim")
+ClaimByClaimRelatingClaim: [Claim]  @relation(name:"Claim_ClaimRelatingClaim")
+LossOccurrence: LossOccurrence @relation(name:"LossOccurrence_LossOccurrenceInitiatedClaim")
+ClaimByClaimRelatedClaim: Claim @relation(name:"Claim_ClaimRelatedClaim")
+ClaimGrouping: [ClaimGrouping] @relation(name:"ClaimGrouping_ClaimGroupingIncludedClaim")
+ClaimByClaimRelatingClaim: Claim @relation(name:"Claim_ClaimRelatingClaim")
+ClaimStatus: ClaimStatus @relation(name:"Claim_ClaimStatus")
+}
+type ClaimBase  
+{
+
+replacingClaimBaseClaimBaseKey: String
+txPrimaryKey: String @unique
+txMetaSource: String
+effectivePeriodStart: String
+effectivePeriodEnd: String
+claimBaseKind: String
+identifier: String
+txMetaCorrection: String
+txMetaChange: String
+txMetaStartEventTime: String
+txMetaSourceKey: String
+txMetaLoadTime: String
+id: ID! @id
+claimBaseKey: String
+PartyRoleInClaim: [PartyRoleInClaim]  @relation(name:"ClaimBase_ClaimBaseInvolvedPartyRoleInClaim")
+ClaimBase: [ClaimBase]  @relation(name:"ClaimBase_ClaimBaseReplacedClaimBase")
+ClaimBase: ClaimBase @relation(name:"ClaimBase_ClaimBaseReplacedClaimBase")
+}
+type ClaimGrouping  
+{
+
+txMetaCorrection: String
+txMetaChange: String
+txMetaStartEventTime: String
+txPrimaryKey: String @unique
+txMetaSourceKey: String
+txMetaSource: String
+overlappingCoverageIndicator: String
+txMetaLoadTime: String
+incurredButNotReportedIndicator: String
+id: ID! @id
+claimBaseKey: String
+name: String
+Claim: [Claim]  @relation(name:"ClaimGrouping_ClaimGroupingIncludedClaim")
+LossEvent: [LossEvent]  @relation(name:"ClaimGrouping_ClaimGroupingOriginatingLossEvent")
+}
+type ClaimComponent  
+{
+
+txPrimaryKey: String @unique
+txMetaSource: String
+includingClaimClaimBaseKey: String
+authorizingAgreementComponentAgreementBaseKey: String
+txMetaCorrection: String
+txMetaChange: String
+comprisedClaimComponentClaimBaseKey: String
+txMetaStartEventTime: String
+txMetaSourceKey: String
+txMetaLoadTime: String
+claimComponentKind: String
+id: ID! @id
+claimBaseKey: String
+ClaimComponent: [ClaimComponent]  @relation(name:"ClaimComponent_ClaimComponentComprisingClaimComponent")
+ClaimOffer: [ClaimOffer]  @relation(name:"ClaimComponent_ClaimComponentUtilizingClaimOffer")
+Claim: Claim @relation(name:"Claim_ClaimIncludedClaimComponent")
+ClaimComponent: ClaimComponent @relation(name:"ClaimComponent_ClaimComponentComprisingClaimComponent")
+
+}
+type ClaimStatus  
+{
+
+owningClaimClaimBaseKey: String
+statusKey: String
+txMetaCorrection: String
+txMetaChange: String
+txMetaStartEventTime: String
+txPrimaryKey: String @unique
+txMetaSourceKey: String
+txMetaSource: String
+txMetaLoadTime: String
+id: ID! @id
+code: String
+Claim: Claim @relation(name:"Claim_ClaimStatus")
+}
+type ClaimOffer  
+{
+
+settlementMethodCode: String
+originatingClaimOfferClaimBaseKey: String
+benefitDefinitionCreationDateTime: String
+txPrimaryKey: String @unique
+txMetaSource: String
+offerType: String
+supportedClaimClaimBaseKey: String
+txMetaCorrection: String
+txMetaChange: String
+txMetaStartEventTime: String
+comprisedClaimOfferClaimBaseKey: String
+validityPeriodStart: String
+validityPeriodEnd: String
+txMetaSourceKey: String
+txMetaLoadTime: String
+id: ID! @id
+claimBaseKey: String
+offerLimitDateTime: String
+ClaimOfferByClaimOfferComprisingClaimOffer: [ClaimOffer]  @relation(name:"ClaimOffer_ClaimOfferComprisingClaimOffer")
+ClaimOfferByClaimOfferRecoveringClaimOffer: [ClaimOffer]  @relation(name:"ClaimOffer_ClaimOfferRecoveringClaimOffer")
+ClaimOfferByClaimOfferRecoveredClaimOffer: [ClaimOffer]  @relation(name:"ClaimOffer_ClaimOfferRecoveredClaimOffer")
+ClaimOfferByClaimOfferAlternativeClaimOffer: [ClaimOffer]  @relation(name:"ClaimOffer_ClaimOfferAlternativeClaimOffer")
+ClaimOfferByClaimOfferComprisingClaimOffer: ClaimOffer @relation(name:"ClaimOffer_ClaimOfferComprisingClaimOffer")
+Claim: Claim @relation(name:"Claim_ClaimSupportingClaimOffer")
+ClaimOfferByClaimOfferRecoveringClaimOffer: ClaimOffer @relation(name:"ClaimOffer_ClaimOfferRecoveringClaimOffer")
+ClaimOfferByClaimOfferRecoveredClaimOffer: ClaimOffer @relation(name:"ClaimOffer_ClaimOfferRecoveredClaimOffer")
+ClaimComponent: [ClaimComponent] @relation(name:"ClaimComponent_ClaimComponentUtilizingClaimOffer")
+ClaimOfferByClaimOfferAlternativeClaimOffer: ClaimOffer @relation(name:"ClaimOffer_ClaimOfferAlternativeClaimOffer")
+ClaimOfferStatus: ClaimOfferStatus @relation(name:"ClaimOffer_ClaimOfferStatus")
+}
+type ClaimOfferStatus  
+{
+
+reasonCode: String
+owningClaimOfferClaimBaseKey: String
+statusKey: String
+txMetaCorrection: String
+txMetaChange: String
+txMetaStartEventTime: String
+txPrimaryKey: String @unique
+txMetaSourceKey: String
+txMetaSource: String
+txMetaLoadTime: String
+id: ID! @id
+code: String
+ClaimOffer: ClaimOffer @relation(name:"ClaimOffer_ClaimOfferStatus")
+}
+type Role  
+{
+
+description: String
+txPrimaryKey: String @unique
+txMetaSource: String
+roleKey: String
+playerRoleRoleKey: String
+roleKind: String
+txMetaCorrection: String
+txMetaChange: String
+txMetaStartEventTime: String
+txMetaSourceKey: String
+txMetaLoadTime: String
+rolePlayerPeriodStart: String
+rolePlayerPeriodEnd: String
+id: ID! @id
+Role: [Role]  @relation(name:"Role_RoleRole")
+Role: Role @relation(name:"Role_RoleRole")
+}
+type LossNotification  
+{
+
+receptionDateTime: String
+txPrimaryKey: String @unique
+txMetaSource: String
+completionDateTime: String
+method: String
+preferredMediaCode: String
+communicationKey: String
+txMetaCorrection: String
+txMetaChange: String
+declarationDateTime: String
+txMetaStartEventTime: String
+describedLossOccurrenceLossOccurrenceKey: String
+txMetaSourceKey: String
+txMetaLoadTime: String
+id: ID! @id
+PartyRoleInClaim: [PartyRoleInClaim]  @relation(name:"LossNotification_LossNotificationReportingClaimDeclarer")
+LossOccurrence: LossOccurrence @relation(name:"LossOccurrence_LossOccurrenceDescribingLossNotification")
+}
+type LossOccurrence  
+{
+
+lossOccurrenceKey: String
+description: String
+accidentIndicator: String
+policeReportIndicator: String
+txPrimaryKey: String @unique
+txMetaSource: String
+dateTime: String
+occurringPlacePlaceKey: String
+trafficAccidentIndicator: String
+workAccidentIndicator: String
+txMetaCorrection: String
+txMetaChange: String
+txMetaStartEventTime: String
+involvedPerilPerilKey: String
+txMetaSourceKey: String
+txMetaLoadTime: String
+id: ID! @id
+originatingLossEventEventKey: String
+thirdPartyInvolvedIndicator: String
+Claim: [Claim]  @relation(name:"LossOccurrence_LossOccurrenceInitiatedClaim")
+LossNotification: [LossNotification]  @relation(name:"LossOccurrence_LossOccurrenceDescribingLossNotification")
+LossEvent: LossEvent @relation(name:"LossEvent_LossEventProducedLossOccurrence")
+Place: Place @relation(name:"Place_PlaceOccurringLossOccurrence")
+}
+type Address  
+{
+
+floorNumber: String
+addressKind: String
+areaCode: String
+carrierRoute: String
+postalCountrySubdivisionPlaceKey: String
+fullNumber: String
+trunkPrefix: String
+buildingName: String
+preDirectionCode: String
+addressKey: String
+typeCode: String
+telecommunicationAddressKind: String
+name: String
+postDirectionCode: String
+postalBarcode: String
+boxNumber: String
+postalCountryPlaceKey: String
+identifier: String
+txMetaCorrection: String
+number: String
+txMetaStartEventTime: String
+txMetaSourceKey: String
+postalStreetAddressAddressKey: String
+placeAddressKind: String
+id: ID! @id
+localNumber: String
+txPrimaryKey: String @unique
+txMetaSource: String
+networkAddressKind: String
+extension: String
+txMetaChange: String
+postalPostCodePlaceKey: String
+identifiedPlacePlaceKey: String
+unstructuredAddress: String
+unitNumber: String
+txMetaLoadTime: String
+countryCode: String
+Address: [Address]  @relation(name:"Address_StreetAddressDeliveryAddress")
+ContactMethod: [ContactMethod]  @relation(name:"Address_IdentifyingAddress")
+PlaceByCountrySubdivisionDeliveryAddress: Place @relation(name:"Place_CountrySubdivisionDeliveryAddress")
+PlaceByPostCodeDeliveryAddress: Place @relation(name:"Place_PostCodeDeliveryAddress")
+PlaceByMunicipalityDeliveryAddress: [Place] @relation(name:"Place_MunicipalityDeliveryAddress")
+PlaceByPlaceIdentifyingAddress: Place @relation(name:"Place_PlaceIdentifyingAddress")
+PlaceByCountryDeliveryAddress: Place @relation(name:"Place_CountryDeliveryAddress")
+Address: Address @relation(name:"Address_StreetAddressDeliveryAddress")
+}
+type ContactMethod  
+{
+
+priorityLevel: String
+messagingContactKind: String
+redListIndicator: String
+telephoneNumberAddressKey: String
+lastValidatedDateTime: String
+preferredPartyNamePartyNameKey: String
+electronicContactKind: String
+preferringPartyRoleRoleKey: String
+txMetaCorrection: String
+txMetaStartEventTime: String
+purposeCode: String
+availablePeriodStart: String
+availablePeriodEnd: String
+txMetaSourceKey: String
+contactMethodKind: String
+contactMethodKey: String
+id: ID! @id
+usageCode: String
+networkTypeCode: String
+solicitableIndicator: String
+txPrimaryKey: String @unique
+txMetaSource: String
+purpose: String
+deliveryAddressAddressKey: String
+txMetaChange: String
+validationResultCode: String
+contactInstructions: String
+uniformResourceLocatorAddressKey: String
+txMetaLoadTime: String
+preferringPartyPartyKey: String
+CommunicationByContactMethodDirectingCommunication: [Communication]  @relation(name:"ContactMethod_ContactMethodDirectingCommunication")
+CommunicationByContactMethodReplyingCommunication: [Communication]  @relation(name:"ContactMethod_ContactMethodReplyingCommunication")
+CommunicationByContactMethodOriginatingCommunication: [Communication]  @relation(name:"ContactMethod_ContactMethodOriginatingCommunication")
+PartyRole: PartyRole @relation(name:"PartyRole_PartyRolePreferredContactMethod")
+Address: Address @relation(name:"Address_IdentifyingAddress")
+Party: Party @relation(name:"Party_PartyPreferredContactMethod")
+OrganizationName: OrganizationName @relation(name:"OrganizationName_PartyNamePreferringContactMethod")
+PersonName: PersonName @relation(name:"PersonName_PartyNamePreferringContactMethod")
+CommunicationByCommunicationSendingContactMethod: [Communication] @relation(name:"Communication_CommunicationSendingContactMethod")
+}
+type Place  
+{
+
+placeKind: String
+abbreviation: String
+extendedIsoCode: String
+telephonePrefixCode: String
+alphaIsoCode: String
+description: String
+txPrimaryKey: String @unique
+txMetaSource: String
+typeCode: String
+placeKey: String
+assignedCode: String
+subSystemTypeCode: String
+name: String
+txMetaCorrection: String
+txMetaChange: String
+administrativeSubdivisionCode: String
+txMetaStartEventTime: String
+availablePeriodStart: String
+availablePeriodEnd: String
+txMetaSourceKey: String
+txMetaLoadTime: String
+id: ID! @id
+surfaceAreaMeasurement: String
+assignedCodeExtension: String
+AddressByCountrySubdivisionDeliveryAddress: [Address]  @relation(name:"Place_CountrySubdivisionDeliveryAddress")
+AddressByMunicipalityDeliveryAddress: [Address]  @relation(name:"Place_MunicipalityDeliveryAddress")
+AddressByCountryDeliveryAddress: [Address]  @relation(name:"Place_CountryDeliveryAddress")
+EventByPlaceOccurringEvent: [Event]  @relation(name:"Place_PlaceOccurringEvent")
+AddressByPlaceIdentifyingAddress: [Address]  @relation(name:"Place_PlaceIdentifyingAddress")
+AddressByPostCodeDeliveryAddress: [Address]  @relation(name:"Place_PostCodeDeliveryAddress")
+LossOccurrence: [LossOccurrence]  @relation(name:"Place_PlaceOccurringLossOccurrence")
+Event: [Event] @relation(name:"Event_EventAffectedPlace")
+CategoryByCatastropheCategoryRecognizedPlace: [Category] @relation(name:"Category_CatastropheCategoryRecognizedPlace")
+CategoryByPopulationCategoryCitizenshipCountry: [Category] @relation(name:"Category_PopulationCategoryCitizenshipCountry")
+}
+type TxPartySameAs  
+{
+
+txMaxSequence: String
+txPartyKey2: String
+txPartyKey1: String
+txMetaCorrection: String
+txMetaChange: String
+txMetaStartEventTime: String
+txPrimaryKey: String @unique
+txMetaSourceKey: String
+txMetaSource: String
+txMetaLoadTime: String
+id: ID! @id
+PartyByChild: Party @relation(name:"Party_Child")
+PartyByMaster: Party @relation(name:"Party_Master")
+}
+type TxSubscription  
+{
+
+txMetaCorrection: String
+txMetaChange: String
+txQueryName: String
+txMetaStartEventTime: String
+txPrimaryKey: String @unique
+txMetaSourceKey: String
+txMetaSource: String
+txMetaLoadTime: String
+txQueryValue: String
+txAppName: String
+id: ID! @id
+}
